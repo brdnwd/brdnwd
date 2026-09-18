@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build the dynamic portions of the wo-r profile README.
+Build the dynamic portions of the brdnwd profile README.
 
 The GitHub Action supplies GITHUB_TOKEN. No third-party Python packages
 are required.
@@ -20,19 +20,19 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
-USERNAME = "wo-r"
+USERNAME = "brdnwd"
 README = Path("readme.md")
 PROJECT_DIR = Path("profile/projects")
 YOUTUBE_HANDLE = "BrandyBeeers"
 YOUTUBE_URL = f"https://www.youtube.com/@{YOUTUBE_HANDLE}"
-WORK_WITH_ME_URL = "https://wo-r.github.io/contact"
+WORK_WITH_ME_URL = "https://brdnwd.github.io/contact"
 GITHUB_API = "https://api.github.com"
 STATS_BASE = "https://github-stats-extended.vercel.app/api/pin/"
 
 TOKEN = os.environ.get("GITHUB_TOKEN", "")
 HEADERS = {
     "Accept": "application/vnd.github+json",
-    "User-Agent": "wo-r-profile-readme",
+    "User-Agent": "brdnwd-profile-readme",
 }
 if TOKEN:
     HEADERS["Authorization"] = f"Bearer {TOKEN}"
@@ -54,7 +54,7 @@ def get_json(url: str, retries: int = 3):
 def get_bytes(url: str, retries: int = 3):
     last_error = None
     headers = {
-        "User-Agent": "wo-r-profile-readme",
+        "User-Agent": "brdnwd-profile-readme",
         "Accept": "image/svg+xml,text/xml,application/xml,text/plain,*/*",
     }
     for attempt in range(retries):
@@ -236,7 +236,7 @@ def event_text(event: dict) -> str | None:
             branch_url = f"{repo_url}/tree/{urllib.parse.quote(branch, safe='')}"
             branch_link = f"[`{branch}`]({branch_url})"
             return (
-                f"`[{date}]` [📝](https://github.com/wo-r/wo-r/raw/main/profile/icons/commit.png) "
+                f"`[{date}]` [📝](https://github.com/brdnwd/brdnwd/raw/main/profile/icons/commit.png) "
                 f"Made `{amount}` commit{'s' if amount != 1 else ''} in "
                 f"{linked_repo} on {branch_link}"
             )
@@ -352,7 +352,7 @@ def youtube_markdown():
 
         request = urllib.request.Request(
             feed_url,
-            headers={"User-Agent": "wo-r-profile-readme"},
+            headers={"User-Agent": "brdnwd-profile-readme"},
         )
         with urllib.request.urlopen(request, timeout=30) as response:
             data = response.read()
