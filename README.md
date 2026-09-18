@@ -36,7 +36,111 @@
 ## Latest YouTube Videos
 
 <!-- YOUTUBE:START -->
-Loading latest videos...
+
+<table>
+  <tr>
+    <td width="220">
+      <a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
+        <img
+          src="https://img.youtube.com/vi/9EJ8qi6hfTg/mqdefault.jpg"
+          width="200"
+        >
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
+        <strong>Something is very wrong with this dog.</strong>
+      </a>
+      <br>
+      <sub>YouTube</sub>
+    </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td width="220">
+      <a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
+        <img
+          src="https://img.youtube.com/vi/vbEIpyeEQdU/mqdefault.jpg"
+          width="200"
+        >
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
+        <strong>I Ran a Photo Studio and Nothing About It Made Sense</strong>
+      </a>
+      <br>
+      <sub>YouTube</sub>
+    </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td width="220">
+      <a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
+        <img
+          src="https://img.youtube.com/vi/tQMA8avmzhc/mqdefault.jpg"
+          width="200"
+        >
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
+        <strong>Second times the charm</strong>
+      </a>
+      <br>
+      <sub>YouTube</sub>
+    </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td width="220">
+      <a href="https://www.youtube.com/shorts/PdQ0YoX9wX4">
+        <img
+          src="https://img.youtube.com/vi/PdQ0YoX9wX4/mqdefault.jpg"
+          width="200"
+        >
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/shorts/PdQ0YoX9wX4">
+        <strong>He aced it. Then this happened.  #funnyclips  #drunkgaming  #funny</strong>
+      </a>
+      <br>
+      <sub>YouTube</sub>
+    </td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td width="220">
+      <a href="https://www.youtube.com/shorts/HfcFKElRLKc">
+        <img
+          src="https://img.youtube.com/vi/HfcFKElRLKc/mqdefault.jpg"
+          width="200"
+        >
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/shorts/HfcFKElRLKc">
+        <strong>What is he saying 💀 #drunk #gaming #entertainment</strong>
+      </a>
+      <br>
+      <sub>YouTube</sub>
+    </td>
+  </tr>
+</table>
+
 <!-- YOUTUBE:END -->
 
 [➡️ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
