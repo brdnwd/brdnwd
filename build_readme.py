@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 USERNAME = "wo-r"
-README = Path("README.md")
+README = Path("readme.md")
 PROJECT_DIR = Path("profile/projects")
 YOUTUBE_HANDLE = "BrandyBeeers"
 YOUTUBE_URL = f"https://www.youtube.com/@{YOUTUBE_HANDLE}"
