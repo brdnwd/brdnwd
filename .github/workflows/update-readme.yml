@@ -20,14 +20,22 @@ jobs:
         run: |
           python3 <<'PY'
           import urllib.request
-          import urllib.error
           import xml.etree.ElementTree as ET
           import re
           import html
 
+
+          # =========================================================
+          # SETTINGS
+          # =========================================================
+
           README = "README.md"
 
-          YOUTUBE_FEED = "https://www.youtube.com/feeds/videos.xml?channel_id=UC1eVpwYmIxLqi84OroyZo6w"
+          YOUTUBE_FEED = (
+              "https://www.youtube.com/feeds/videos.xml?"
+              "channel_id=UC1eVpwYmIxLqi84OroyZo6w"
+          )
+
           DEV_FEED = "https://dev.to/feed/brdnwd"
 
           YOUTUBE_START = "<!-- YOUTUBE:START -->"
@@ -37,12 +45,14 @@ jobs:
           BLOG_END = "<!-- BLOG:END -->"
 
 
-          # ---------------------------------------------------------
-          # Fetch RSS/Atom feed
-          # ---------------------------------------------------------
+          # =========================================================
+          # FETCH RSS FEED
+          # =========================================================
 
           def fetch_feed(url, retries=5):
+
               for attempt in range(retries):
+
                   try:
                       request = urllib.request.Request(
                           url,
@@ -51,42 +61,64 @@ jobs:
                           }
                       )
 
-                      with urllib.request.urlopen(request, timeout=20) as response:
+                      with urllib.request.urlopen(
+                          request,
+                          timeout=20
+                      ) as response:
                           return response.read()
 
                   except Exception as e:
-                      print(f"Feed attempt {attempt + 1} failed: {e}")
+                      print(
+                          f"Feed attempt {attempt + 1} failed: {e}"
+                      )
 
               return None
 
 
-          # ---------------------------------------------------------
-          # Clean text
-          # ---------------------------------------------------------
+          # =========================================================
+          # CLEAN TEXT
+          # =========================================================
 
           def clean_text(text):
+
               if not text:
                   return ""
 
               text = html.unescape(text)
 
-              # Remove HTML
-              text = re.sub(r"<[^>]+>", " ", text)
+              # Remove HTML tags
+              text = re.sub(
+                  r"<[^>]+>",
+                  " ",
+                  text
+              )
 
               # Remove URLs
-              text = re.sub(r"https?://\S+", "", text)
+              text = re.sub(
+                  r"https?://\S+",
+                  "",
+                  text
+              )
 
               # Remove excessive whitespace
-              text = re.sub(r"\s+", " ", text)
+              text = re.sub(
+                  r"\s+",
+                  " ",
+                  text
+              )
 
               return text.strip()
 
 
-          # ---------------------------------------------------------
-          # Shorten descriptions
-          # ---------------------------------------------------------
+          # =========================================================
+          # SHORTEN DESCRIPTION
+          # =========================================================
 
-          def shorten_description(text, max_words=20):
+          def shorten_description(
+              text,
+              max_words=20
+          ):
+
               text = clean_text(text)
 
               if not text:
@@ -97,115 +129,205 @@ jobs:
               if len(words) <= max_words:
                   return text
 
-              return " ".join(words[:max_words]) + "..."
+              return (
+                  " ".join(words[:max_words])
+                  + "..."
+              )
 
 
-          # ---------------------------------------------------------
-          # Escape text for HTML
-          # ---------------------------------------------------------
+          # =========================================================
+          # ESCAPE HTML
+          # =========================================================
 
           def escape(text):
-              return html.escape(text, quote=True)
+
+              return html.escape(
+                  text or "",
+                  quote=True
+              )
 
 
-          # ---------------------------------------------------------
-          # YouTube feed
-          # ---------------------------------------------------------
+          # =========================================================
+          # GET YOUTUBE VIDEOS
+          # =========================================================
 
           def get_youtube_videos():
-              data = fetch_feed(YOUTUBE_FEED)
+
+              data = fetch_feed(
+                  YOUTUBE_FEED
+              )
 
               if not data:
-                  print("Could not retrieve YouTube feed.")
+                  print(
+                      "Could not retrieve YouTube feed."
+                  )
                   return []
 
               try:
                   root = ET.fromstring(data)
+
               except Exception as e:
-                  print(f"Could not parse YouTube feed: {e}")
+                  print(
+                      f"Could not parse YouTube feed: {e}"
+                  )
                   return []
 
               ns = {
-                  "atom": "http://www.w3.org/2005/Atom",
-                  "yt": "http://www.youtube.com/xml/schemas/2015",
-                  "media": "http://search.yahoo.com/mrss/"
+                  "atom":
+                      "http://www.w3.org/2005/Atom",
+
+                  "yt":
+                      "http://www.youtube.com/xml/schemas/2015",
+
+                  "media":
+                      "http://search.yahoo.com/mrss/"
               }
 
               videos = []
 
-              for entry in root.findall("atom:entry", ns)[:4]:
+              entries = root.findall(
+                  "atom:entry",
+                  ns
+              )
 
-                  video_id = entry.findtext("yt:videoId", default="", namespaces=ns)
-                  title = entry.findtext("atom:title", default="", namespaces=ns)
+              for entry in entries[:4]:
 
-                  link_element = entry.find("atom:link", ns)
+                  video_id = entry.findtext(
+                      "yt:videoId",
+                      default="",
+                      namespaces=ns
+                  )
+
+                  title = entry.findtext(
+                      "atom:title",
+                      default="",
+                      namespaces=ns
+                  )
+
+                  link_element = entry.find(
+                      "atom:link",
+                      ns
+                  )
 
                   if link_element is not None:
-                      url = link_element.attrib.get("href", "")
+                      url = link_element.attrib.get(
+                          "href",
+                          ""
+                      )
                   else:
-                      url = f"https://www.youtube.com/watch?v={video_id}"
+                      url = (
+                          "https://www.youtube.com/watch?v="
+                          + video_id
+                      )
 
                   description = ""
 
-                  media_group = entry.find("media:group", ns)
+                  media_group = entry.find(
+                      "media:group",
+                      ns
+                  )
 
                   if media_group is not None:
-                      description_element = media_group.find(
-                          "media:description",
-                          ns
+
+                      description_element = (
+                          media_group.find(
+                              "media:description",
+                              ns
+                          )
                       )
 
                       if description_element is not None:
-                          description = description_element.text or ""
+                          description = (
+                              description_element.text
+                              or ""
+                          )
 
                   if not description:
-                      summary = entry.find("atom:summary", ns)
+
+                      summary = entry.find(
+                          "atom:summary",
+                          ns
+                      )
 
                       if summary is not None:
-                          description = summary.text or ""
+                          description = (
+                              summary.text
+                              or ""
+                          )
 
                   thumbnail = ""
 
                   if video_id:
+
                       thumbnail = (
-                          f"https://img.youtube.com/vi/"
-                          f"{video_id}/mqdefault.jpg"
+                          "https://img.youtube.com/vi/"
+                          + video_id
+                          + "/mqdefault.jpg"
                       )
 
                   videos.append({
                       "url": url,
                       "thumbnail": thumbnail,
                       "title": title,
-                      "description": shorten_description(description, 20)
+                      "description":
+                          shorten_description(
+                              description,
+                              20
+                          )
                   })
 
-              return videos
+              print(
+                  f"YouTube videos found: "
+                  f"{len(videos)}"
+              )
+
+              return videos[:4]
 
 
-          # ---------------------------------------------------------
-          # DEV.to feed
-          # ---------------------------------------------------------
+          # =========================================================
+          # GET DEV.TO POSTS
+          # =========================================================
 
           def get_dev_posts():
-              data = fetch_feed(DEV_FEED)
+
+              data = fetch_feed(
+                  DEV_FEED
+              )
 
               if not data:
-                  print("Could not retrieve DEV.to feed.")
+                  print(
+                      "Could not retrieve DEV.to feed."
+                  )
                   return []
 
               try:
                   root = ET.fromstring(data)
+
               except Exception as e:
-                  print(f"Could not parse DEV.to feed: {e}")
+                  print(
+                      f"Could not parse DEV.to feed: {e}"
+                  )
                   return []
 
               posts = []
 
-              for item in root.findall(".//item")[:8]:
+              items = root.findall(
+                  ".//item"
+              )
 
-                  title_element = item.find("title")
-                  link_element = item.find("link")
-                  description_element = item.find("description")
+              for item in items[:8]:
+
+                  title_element = item.find(
+                      "title"
+                  )
+
+                  link_element = item.find(
+                      "link"
+                  )
+
+                  description_element = item.find(
+                      "description"
+                  )
 
                   title = (
                       title_element.text
@@ -225,25 +347,42 @@ jobs:
                       else ""
                   )
 
-                  # Try to find an image from the RSS enclosure
                   thumbnail = ""
 
-                  enclosure = item.find("enclosure")
+                  # Try enclosure image
+                  enclosure = item.find(
+                      "enclosure"
+                  )
 
                   if enclosure is not None:
-                      thumbnail = enclosure.attrib.get("url", "")
 
-                  # Try Media RSS if no enclosure exists
+                      thumbnail = (
+                          enclosure.attrib.get(
+                              "url",
+                              ""
+                          )
+                      )
+
+                  # Try Media RSS image
                   if not thumbnail:
+
                       media_content = item.find(
-                          "{http://search.yahoo.com/mrss/}content"
+                          "{http://search.yahoo.com/mrss/}"
+                          "content"
                       )
 
                       if media_content is not None:
-                          thumbnail = media_content.attrib.get("url", "")
+
+                          thumbnail = (
+                              media_content.attrib.get(
+                                  "url",
+                                  ""
+                              )
+                          )
 
                   # Fallback image
                   if not thumbnail:
+
                       thumbnail = (
                           "https://placehold.co/"
                           "120x68/0a0a0a/ffffff"
@@ -254,35 +393,58 @@ jobs:
                       "url": url,
                       "thumbnail": thumbnail,
                       "title": title,
-                      "description": shorten_description(description, 20)
+                      "description":
+                          shorten_description(
+                              description,
+                              20
+                          )
                   })
 
-              return posts
+              print(
+                  f"DEV.to posts found: "
+                  f"{len(posts)}"
+              )
+
+              return posts[:8]
 
 
-          # ---------------------------------------------------------
-          # Create a single card
-          #
-          # Each card uses TWO cells:
-          #   1. Thumbnail
-          #   2. Text
-          #
-          # Two cards therefore use FOUR cells per row.
-          # ---------------------------------------------------------
+          # =========================================================
+          # CREATE CARD
+          # =========================================================
 
           def create_card(item):
-              url = escape(item["url"])
-              thumbnail = escape(item["thumbnail"])
-              title = escape(item["title"])
-              description = escape(item["description"])
+
+              url = escape(
+                  item["url"]
+              )
+
+              thumbnail = escape(
+                  item["thumbnail"]
+              )
+
+              title = escape(
+                  item["title"]
+              )
+
+              description = escape(
+                  item["description"]
+              )
 
               return f"""
-          <td width="120" valign="top" style="padding: 4px 0 4px 4px;">
+          <td width="120" valign="top"
+              style="padding: 4px 0 4px 4px;">
             <a href="{url}">
-              <img src="{thumbnail}" width="120" height="68" alt="">
+              <img
+                src="{thumbnail}"
+                width="120"
+                height="68"
+                alt=""
+              >
             </a>
           </td>
-          <td valign="top" style="padding: 8px 12px 8px 8px;">
+
+          <td valign="top"
+              style="padding: 8px 12px 8px 8px;">
             <a href="{url}">
               <strong>{title}</strong>
             </a>
@@ -292,73 +454,127 @@ jobs:
           """
 
 
-          # ---------------------------------------------------------
-          # Create 2-column card grid
-          # ---------------------------------------------------------
+          # =========================================================
+          # CREATE EMPTY CARD
+          #
+          # IMPORTANT:
+          # We keep TWO empty cells instead of using colspan.
+          # This keeps the 2-column layout when there is only
+          # one post/video.
+          # =========================================================
 
-          def create_grid(items):
-              rows = []
+          def create_empty_card():
 
-              for i in range(0, len(items), 2):
+              return """
+          <td width="120" valign="top"
+              style="padding: 4px;">
+          </td>
 
-                  left = create_card(items[i])
-
-                  if i + 1 < len(items):
-                      right = create_card(items[i + 1])
-                  else:
-                      right = """
-          <td colspan="2"></td>
+          <td valign="top"
+              style="padding: 4px;">
+          </td>
           """
 
-                  rows.append(f"""
+
+          # =========================================================
+          # CREATE GRID
+          # =========================================================
+
+          def create_grid(items):
+
+              if not items:
+
+                  return (
+                      "_Nothing to show yet._"
+                  )
+
+              rows = []
+
+              for i in range(
+                  0,
+                  len(items),
+                  2
+              ):
+
+                  left_card = create_card(
+                      items[i]
+                  )
+
+                  if i + 1 < len(items):
+
+                      right_card = create_card(
+                          items[i + 1]
+                      )
+
+                  else:
+
+                      right_card = (
+                          create_empty_card()
+                      )
+
+                  rows.append(
+                      f"""
           <tr>
-          {left}
-          {right}
+          {left_card}
+          {right_card}
           </tr>
-          """)
+          """
+                  )
 
               return f"""
-          <table width="100%">
+          <table
+            width="100%"
+            cellspacing="0"
+            cellpadding="0"
+            style="table-layout: fixed;"
+          >
           {''.join(rows)}
           </table>
           """
 
 
-          # ---------------------------------------------------------
-          # Read README
-          # ---------------------------------------------------------
+          # =========================================================
+          # READ README
+          # =========================================================
 
-          with open(README, "r", encoding="utf-8") as file:
+          with open(
+              README,
+              "r",
+              encoding="utf-8"
+          ) as file:
+
               readme = file.read()
 
 
-          # ---------------------------------------------------------
-          # YouTube
-          # ---------------------------------------------------------
+          # =========================================================
+          # GET FEEDS
+          # =========================================================
 
-          youtube_videos = get_youtube_videos()
+          youtube_videos = (
+              get_youtube_videos()
+          )
 
-          if youtube_videos:
-              youtube_content = create_grid(youtube_videos)
-          else:
-              youtube_content = "_No videos found._"
-
-
-          # ---------------------------------------------------------
-          # DEV.to
-          # ---------------------------------------------------------
-
-          dev_posts = get_dev_posts()
-
-          if dev_posts:
-              blog_content = create_grid(dev_posts)
-          else:
-              blog_content = "_No posts found._"
+          dev_posts = (
+              get_dev_posts()
+          )
 
 
-          # ---------------------------------------------------------
-          # Replace YouTube section
-          # ---------------------------------------------------------
+          # =========================================================
+          # CREATE CONTENT
+          # =========================================================
+
+          youtube_content = create_grid(
+              youtube_videos
+          )
+
+          blog_content = create_grid(
+              dev_posts
+          )
+
+
+          # =========================================================
+          # UPDATE YOUTUBE SECTION
+          # =========================================================
 
           youtube_pattern = (
               re.escape(YOUTUBE_START)
@@ -368,19 +584,22 @@ jobs:
 
           readme = re.sub(
               youtube_pattern,
+
               YOUTUBE_START
               + "\n"
               + youtube_content
               + "\n"
               + YOUTUBE_END,
+
               readme,
+
               flags=re.DOTALL
           )
 
 
-          # ---------------------------------------------------------
-          # Replace blog section
-          # ---------------------------------------------------------
+          # =========================================================
+          # UPDATE BLOG SECTION
+          # =========================================================
 
           blog_pattern = (
               re.escape(BLOG_START)
@@ -390,26 +609,36 @@ jobs:
 
           readme = re.sub(
               blog_pattern,
+
               BLOG_START
               + "\n"
               + blog_content
               + "\n"
               + BLOG_END,
+
               readme,
+
               flags=re.DOTALL
           )
 
 
-          # ---------------------------------------------------------
-          # Write README
-          # ---------------------------------------------------------
+          # =========================================================
+          # WRITE README
+          # =========================================================
 
-          with open(README, "w", encoding="utf-8") as file:
-              file.write(readme)
+          with open(
+              README,
+              "w",
+              encoding="utf-8"
+          ) as file:
 
-          print("README updated successfully.")
-          print(f"YouTube videos: {len(youtube_videos)}")
-          print(f"DEV.to posts: {len(dev_posts)}")
+              file.write(
+                  readme
+              )
+
+          print(
+              "README update complete."
+          )
           PY
 
       - name: Commit changes
