@@ -1,0 +1,513 @@
+name: README Service Worker
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Service Worker
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python3 <<'PY'
+          import urllib.request
+          import urllib.parse
+          import urllib.error
+          import xml.etree.ElementTree as ET
+          import json
+          import re
+          import html
+          import os
+          import random
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          README = "README.md"
+          YOUTUBE_CHANNEL_ID = "UC1eVpwYmIxLqi84OroyZo6w"
+          DEV_FEED = "https://dev.to/feed/brdnwd"
+
+          YOUTUBE_START = "<!-- YOUTUBE:START -->"
+          YOUTUBE_END = "<!-- YOUTUBE:END -->"
+
+          BLOG_START = "<!-- BLOG:START -->"
+          BLOG_END = "<!-- BLOG:END -->"
+
+          GREETING_START = "<!-- GREETING:START -->"
+          GREETING_END = "<!-- GREETING:END -->"
+
+          REFRESH_START = "<!-- REFRESH:START -->"
+          REFRESH_END = "<!-- REFRESH:END -->"
+
+          GREETINGS = [
+              "Hi 👋, I'm Braden",
+              "Hi 👋, Nice to meet you",
+              "Hey 👋, hows your day going?",
+              "Hello 👋, Welcome to my profile",
+              "Hi 👋, Thanks for stopping by",
+              "Hey 👋, Glad you're here",
+              "Hello 👋, Thanks for visiting",
+              "Hey 👋, Welcome to my profile",
+              "Hi 👋, Hope you're having a good day",
+              "Hey 👋, What's up?",
+              "Hello 👋, Nice to see you here",
+              "Hi 👋, Welcome!",
+              "Hey 👋, Thanks for checking out my profile",
+              "Hello 👋, Glad you stopped by",
+              "Hi 👋, Take a look around",
+              "Hey 👋, Welcome in",
+              "Hello 👋, Good to see you",
+              "Hi 👋, Thanks for checking out my profile",
+              "Hey 👋, Hope you're doing well",
+              "Hello 👋, Have a look around"
+          ]
+
+          def fetch_url(url, retries=5):
+              for attempt in range(retries):
+                  try:
+                      request = urllib.request.Request(
+                          url,
+                          headers={"User-Agent": "Mozilla/5.0"}
+                      )
+                      with urllib.request.urlopen(request, timeout=20) as response:
+                          return response.read()
+                  except Exception as e:
+                      print(f"Request attempt {attempt + 1} failed: {e}")
+              return None
+
+          def fetch_json(url):
+              try:
+                  request = urllib.request.Request(
+                      url,
+                      headers={"User-Agent": "Mozilla/5.0"}
+                  )
+                  with urllib.request.urlopen(request, timeout=20) as response:
+                      return json.loads(response.read().decode("utf-8"))
+              except urllib.error.HTTPError as e:
+                  error_body = e.read().decode("utf-8", errors="replace")
+                  print(f"HTTP Error {e.code}:")
+                  print(error_body)
+                  return None
+              except Exception as e:
+                  print(f"Request failed: {e}")
+                  return None
+
+          def clean_text(text):
+              if not text:
+                  return ""
+
+              text = html.unescape(text)
+              text = re.sub(r"<[^>]+>", " ", text)
+              text = re.sub(r"https?://\S+", "", text)
+              text = re.sub(r"\s+", " ", text)
+
+              return text.strip()
+
+          def shorten_description(text, max_words=50):
+              text = clean_text(text)
+
+              if not text:
+                  return ""
+
+              words = text.split()
+
+              if len(words) <= max_words:
+                  return text
+
+              return " ".join(words[:max_words]) + "..."
+
+          def shorten_title(text, max_chars=150):
+              text = clean_text(text)
+
+              if len(text) <= max_chars:
+                  return text
+
+              return text[:max_chars - 3].rstrip() + "..."
+
+          def escape(text):
+              return html.escape(text or "", quote=True)
+
+          def get_youtube_videos():
+              api_key = os.environ.get("YOUTUBE_API_KEY")
+
+              if not api_key:
+                  print("YOUTUBE_API_KEY is missing.")
+                  return []
+
+              channel_params = urllib.parse.urlencode({
+                  "part": "contentDetails",
+                  "id": YOUTUBE_CHANNEL_ID,
+                  "key": api_key
+              })
+
+              channel_url = (
+                  "https://www.googleapis.com/youtube/v3/channels?"
+                  + channel_params
+              )
+
+              channel_data = fetch_json(channel_url)
+
+              if not channel_data:
+                  print("Could not retrieve YouTube channel information.")
+                  return []
+
+              items = channel_data.get("items", [])
+
+              if not items:
+                  print("YouTube channel was not found.")
+                  return []
+
+              uploads_playlist = (
+                  items[0]
+                  .get("contentDetails", {})
+                  .get("relatedPlaylists", {})
+                  .get("uploads")
+              )
+
+              if not uploads_playlist:
+                  print("Could not find uploads playlist.")
+                  return []
+
+              playlist_params = urllib.parse.urlencode({
+                  "part": "snippet,contentDetails",
+                  "playlistId": uploads_playlist,
+                  "maxResults": 3,
+                  "key": api_key
+              })
+
+              playlist_url = (
+                  "https://www.googleapis.com/youtube/v3/playlistItems?"
+                  + playlist_params
+              )
+
+              playlist_data = fetch_json(playlist_url)
+
+              if not playlist_data:
+                  print("Could not retrieve YouTube videos.")
+                  return []
+
+              videos = []
+
+              for item in playlist_data.get("items", []):
+                  snippet = item.get("snippet", {})
+                  content_details = item.get("contentDetails", {})
+
+                  video_id = content_details.get("videoId")
+
+                  if not video_id:
+                      video_id = snippet.get("resourceId", {}).get("videoId")
+
+                  if not video_id:
+                      continue
+
+                  videos.append({
+                      "id": video_id,
+                      "url": f"https://www.youtube.com/watch?v={video_id}",
+                      "title": shorten_title(
+                          snippet.get("title", ""),
+                          70
+                      ),
+                      "description": shorten_description(
+                          snippet.get("description", ""),
+                          20
+                      )
+                  })
+
+              print("YouTube videos found:", len(videos))
+
+              return videos[:3]
+
+          def get_dev_posts():
+              data = fetch_url(DEV_FEED)
+
+              if not data:
+                  print("Could not retrieve DEV.to feed.")
+                  return []
+
+              try:
+                  root = ET.fromstring(data)
+
+              except Exception as e:
+                  print(f"Could not parse DEV.to feed: {e}")
+                  return []
+
+              posts = []
+
+              for item in root.findall(".//item")[:6]:
+                  title_element = item.find("title")
+                  link_element = item.find("link")
+                  description_element = item.find("description")
+
+                  title = (
+                      title_element.text
+                      if title_element is not None
+                      else ""
+                  )
+
+                  url = (
+                      link_element.text
+                      if link_element is not None
+                      else ""
+                  )
+
+                  description = (
+                      description_element.text
+                      if description_element is not None
+                      else ""
+                  )
+
+                  posts.append({
+                      "url": url,
+                      "title": shorten_title(title, 50),
+                      "description": shorten_description(
+                          description,
+                          20
+                      )
+                  })
+
+              print("DEV.to posts found:", len(posts))
+
+              return posts[:6]
+
+          def create_featured_video(video):
+              url = escape(video["url"])
+              video_id = escape(video["id"])
+
+              thumbnail = (
+                  f"https://img.youtube.com/vi/"
+                  f"{video_id}/maxresdefault.jpg"
+              )
+
+              title = escape(video["title"])
+              description = escape(video["description"])
+
+              return f"""
+          <tr>
+          <td colspan="2" align="center">
+          <a href="{url}">
+          <img src="{thumbnail}" width="400">
+          </a>
+          <br>
+          <div style="height: 48px;">
+          <a href="{url}"><strong>{title}</strong></a>
+          </div>
+          <br>
+          {description}
+          </td>
+          </tr>
+          """
+
+          def create_small_video(video):
+              url = escape(video["url"])
+              video_id = escape(video["id"])
+
+              thumbnail = (
+                  f"https://img.youtube.com/vi/"
+                  f"{video_id}/mqdefault.jpg"
+              )
+
+              title = escape(video["title"])
+              description = escape(video["description"])
+
+              return f"""
+          <td width="50%" valign="top" align="center">
+          <a href="{url}">
+          <img src="{thumbnail}" width="250">
+          </a>
+          <br>
+          <div style="height: 48px;">
+          <a href="{url}"><strong>{title}</strong></a>
+          </div>
+          <br>
+          {description}
+          </td>
+          """
+
+          def create_youtube_grid(videos):
+              if not videos:
+                  return "_Nothing to show yet._"
+
+              output = f"""
+          <table width="100%">
+          {create_featured_video(videos[0])}
+          """
+
+              if len(videos) >= 2:
+                  output += "<tr>"
+                  output += create_small_video(videos[1])
+
+                  if len(videos) >= 3:
+                      output += create_small_video(videos[2])
+                  else:
+                      output += '<td width="50%"></td>'
+
+                  output += "</tr>"
+
+              output += "</table>"
+
+              return output
+
+          def create_blog_post(post):
+              url = escape(post["url"])
+              title = escape(post["title"])
+              description = escape(post["description"])
+
+              return f"""
+          <td width="50%" valign="top">
+          <a href="{url}"><strong>{title}</strong></a>
+          <br><br>
+          {description}
+          </td>
+          """
+
+          def create_blog_grid(posts):
+              if not posts:
+                  return "_Nothing to show yet._"
+
+              rows = []
+
+              for i in range(0, len(posts), 2):
+                  left = create_blog_post(posts[i])
+
+                  if i + 1 < len(posts):
+                      right = create_blog_post(posts[i + 1])
+
+                      rows.append(f"""
+          <tr>
+          {left}
+          {right}
+          </tr>
+          """)
+
+                  else:
+                      rows.append(f"""
+          <tr>
+          {left}
+          </tr>
+          """)
+
+              return f"""
+          <table width="100%">
+          {''.join(rows)}
+          </table>
+          """
+
+          def replace_section(text, start_marker, end_marker, content):
+              pattern = (
+                  re.escape(start_marker)
+                  + r".*?"
+                  + re.escape(end_marker)
+              )
+
+              replacement = (
+                  start_marker
+                  + "\n"
+                  + content
+                  + "\n"
+                  + end_marker
+              )
+
+              updated = re.sub(
+                  pattern,
+                  replacement,
+                  text,
+                  count=1,
+                  flags=re.DOTALL
+              )
+
+              if updated == text:
+                  print(
+                      f"WARNING: Could not find section "
+                      f"{start_marker}"
+                  )
+
+              return updated
+
+          def update_greeting(readme):
+              greeting = random.choice(GREETINGS)
+
+              content = f"# {greeting}"
+
+              return replace_section(
+                  readme,
+                  GREETING_START,
+                  GREETING_END,
+                  content
+              )
+
+          def update_refresh_time(readme):
+              now = datetime.now(ZoneInfo("America/Chicago"))
+
+              refresh_time = now.strftime(
+                  "%A, %-d %B, %H:%M %Z"
+              )
+
+              content = (
+                  "This README file is generated every 3 hours!\n"
+                  "<br>\n"
+                  f"Last refresh: {refresh_time}"
+              )
+
+              return replace_section(
+                  readme,
+                  REFRESH_START,
+                  REFRESH_END,
+                  content
+              )
+
+          with open(README, "r", encoding="utf-8") as file:
+              readme = file.read()
+
+          youtube_videos = get_youtube_videos()
+          dev_posts = get_dev_posts()
+
+          youtube_content = create_youtube_grid(youtube_videos)
+          blog_content = create_blog_grid(dev_posts)
+
+          readme = replace_section(
+              readme,
+              YOUTUBE_START,
+              YOUTUBE_END,
+              youtube_content
+          )
+
+          readme = replace_section(
+              readme,
+              BLOG_START,
+              BLOG_END,
+              blog_content
+          )
+
+          readme = update_greeting(readme)
+          readme = update_refresh_time(readme)
+
+          with open(README, "w", encoding="utf-8") as file:
+              file.write(readme)
+
+          print("README update complete.")
+
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+
+          if git diff --cached --quiet; then
+            echo "No README changes to commit."
+          else
+            git commit -m "[SW] Updated README"
+            git push
+          fi
