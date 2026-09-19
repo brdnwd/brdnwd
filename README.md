@@ -47,9 +47,9 @@
 <a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
 <img src="https://img.youtube.com/vi/9EJ8qi6hfTg/maxresdefault.jpg" width="400">
 </a>
-
-**[Something is very wrong with this dog.](https://www.youtube.com/watch?v=9EJ8qi6hfTg)**
-
+<br>
+<a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg"><strong>Something is very wrong with this dog.</strong></a>
+<br><br>
 You would think this game is real. I deny this. Play Take Care of the Dog Here: Watch my horror...
 </td>
 </tr>
@@ -59,9 +59,9 @@ You would think this game is real. I deny this. Play Take Care of the Dog Here: 
 <a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
 <img src="https://img.youtube.com/vi/vbEIpyeEQdU/mqdefault.jpg" width="250">
 </a>
-
-**[I Ran a Photo Studio and Nothing About It Made...](https://www.youtube.com/watch?v=vbEIpyeEQdU)**
-
+<br>
+<a href="https://www.youtube.com/watch?v=vbEIpyeEQdU"><strong>I Ran a Photo Studio and Nothing About It Made...</strong></a>
+<br><br>
 How does a game about taking photos somehow make me slowly lose my mind? Play Photomaly here: Watch my horror...
 </td>
 
@@ -69,9 +69,9 @@ How does a game about taking photos somehow make me slowly lose my mind? Play Ph
 <a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
 <img src="https://img.youtube.com/vi/tQMA8avmzhc/mqdefault.jpg" width="250">
 </a>
-
-**[Second times the charm](https://www.youtube.com/watch?v=tQMA8avmzhc)**
-
+<br>
+<a href="https://www.youtube.com/watch?v=tQMA8avmzhc"><strong>Second times the charm</strong></a>
+<br><br>
 Here we go again with the YouTube life. 0:00 – Intro 0:29 – Why even starting a video was hard...
 </td>
 </tr></table>
@@ -88,12 +88,11 @@ _[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
 <tr>
 
 <td width="50%" valign="top">
-**[Hello Dev.to!](https://dev.to/brdnwd/hello-devto-3cnm)**
-
+<a href="https://dev.to/brdnwd/hello-devto-3cnm"><strong>Hello Dev.to!</strong></a>
+<br><br>
 This is my first post, its also a test!
 </td>
 
-<td width="50%"></td>
 </tr>
 
 </table>
