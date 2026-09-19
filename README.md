@@ -8,9 +8,10 @@
     
 ### Connect
 
+[![Website](https://img.shields.io/badge/My_Website-9829cb?style=for-the-badge)](https://brdnwd.github.io)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/brdnwd)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/brdnwd)
-[![Website](https://img.shields.io/badge/My_Website-9829cb?style=for-the-badge)](https://brdnwd.github.io)
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://facebook.com/brdnwd)
 [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
 [![DEV.to](https://img.shields.io/badge/DEV.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/brdnwd)
 
