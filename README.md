@@ -36,96 +36,7 @@
 ## Latest YouTube Videos
 
 <!-- YOUTUBE:START -->
-<table>
-
-<tr>
-
-<td width="50%" valign="top">
-<table>
-<tr>
-<td width="120" valign="top" style="padding: 0;">
-<a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
-<img src="https://img.youtube.com/vi/9EJ8qi6hfTg/mqdefault.jpg" width="120" height="68">
-</a>
-</td>
-<td valign="top" style="padding: 8px 12px;">
-<a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
-<strong>Something is very wrong with this dog.</strong>
-</a>
-<br>
-<sub>You would think this game is real. I deny this. Play Take Care of the Dog Here: Watch my horror...</sub>
-</td>
-</tr>
-</table>
-</td>
-
-
-<td width="50%" valign="top">
-<table>
-<tr>
-<td width="120" valign="top" style="padding: 0;">
-<a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
-<img src="https://img.youtube.com/vi/vbEIpyeEQdU/mqdefault.jpg" width="120" height="68">
-</a>
-</td>
-<td valign="top" style="padding: 8px 12px;">
-<a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
-<strong>I Ran a Photo Studio and Nothing About It Made Sense</strong>
-</a>
-<br>
-<sub>How does a game about taking photos somehow make me slowly lose my mind? Play Photomaly here: Watch my horror...</sub>
-</td>
-</tr>
-</table>
-</td>
-
-</tr>
-
-
-<tr>
-
-<td width="50%" valign="top">
-<table>
-<tr>
-<td width="120" valign="top" style="padding: 0;">
-<a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
-<img src="https://img.youtube.com/vi/tQMA8avmzhc/mqdefault.jpg" width="120" height="68">
-</a>
-</td>
-<td valign="top" style="padding: 8px 12px;">
-<a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
-<strong>Second times the charm</strong>
-</a>
-<br>
-<sub>Here we go again with the YouTube life. 0:00 – Intro 0:29 – Why even starting a video was hard...</sub>
-</td>
-</tr>
-</table>
-</td>
-
-
-<td width="50%" valign="top">
-<table>
-<tr>
-<td width="120" valign="top" style="padding: 0;">
-<a href="https://www.youtube.com/shorts/PdQ0YoX9wX4">
-<img src="https://img.youtube.com/vi/PdQ0YoX9wX4/mqdefault.jpg" width="120" height="68">
-</a>
-</td>
-<td valign="top" style="padding: 8px 12px;">
-<a href="https://www.youtube.com/shorts/PdQ0YoX9wX4">
-<strong>He aced it. Then this happened.  #funnyclips  #drunkgaming  #funny</strong>
-</a>
-<br>
-<sub>blackout drunk and he still did math better than my friend 💀 moment: #shorts #drunkfriend #drunkgaming #gaming #funny #funnyclips</sub>
-</td>
-</tr>
-</table>
-</td>
-
-</tr>
-
-</table>
+_No videos found._
 <!-- YOUTUBE:END -->
 
 [➡️ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
@@ -135,33 +46,31 @@
 ## Latest Blog Posts
 
 <!-- BLOG:START -->
-<table>
+
+<table width="100%">
 
 <tr>
 
-<td width="50%" valign="top">
-<table>
-<tr>
-<td width="120" valign="top" style="padding: 0;">
-<a href="https://dev.to/brdnwd/hello-devto-3cnm">
-<img src="https://placehold.co/120x68/0a0a0a/ffffff?text=DEV.to" width="120" height="68">
-</a>
+<td width="120" valign="top" style="padding: 4px 0 4px 4px;">
+  <a href="https://dev.to/brdnwd/hello-devto-3cnm">
+    <img src="https://placehold.co/120x68/0a0a0a/ffffff?text=DEV.to" width="120" height="68" alt="">
+  </a>
 </td>
-<td valign="top" style="padding: 8px 12px;">
-<a href="https://dev.to/brdnwd/hello-devto-3cnm">
-<strong>Hello Dev.to!</strong>
-</a>
-<br>
-<sub>This is my first post, its also a test!</sub>
-</td>
-</tr>
-</table>
+<td valign="top" style="padding: 8px 12px 8px 8px;">
+  <a href="https://dev.to/brdnwd/hello-devto-3cnm">
+    <strong>Hello Dev.to!</strong>
+  </a>
+  <br>
+  <small>This is my first post, its also a test!</small>
 </td>
 
-<td width="50%"></td>
+
+<td colspan="2"></td>
+
 </tr>
 
 </table>
+
 <!-- BLOG:END -->
 
 [➡️ More posts](https://dev.to/brdnwd)
