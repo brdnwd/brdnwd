@@ -32,7 +32,7 @@ jobs:
 
           README = "README.md"
           YOUTUBE_CHANNEL_ID = "UC1eVpwYmIxLqi84OroyZo6w"
-          DEV_FEED = "https://dev.to/feed/brdnwd"
+          DEV_FEED = "https://dev.to/feed/nazar-boyko"
 
           YOUTUBE_START = "<!-- YOUTUBE:START -->"
           YOUTUBE_END = "<!-- YOUTUBE:END -->"
