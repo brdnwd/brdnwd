@@ -24,11 +24,6 @@ jobs:
           import re
           import html
 
-
-          # =========================================================
-          # SETTINGS
-          # =========================================================
-
           README = "README.md"
 
           YOUTUBE_FEED = (
@@ -45,14 +40,12 @@ jobs:
           BLOG_END = "<!-- BLOG:END -->"
 
 
-          # =========================================================
-          # FETCH RSS FEED
-          # =========================================================
+          # ----------------------------------------
+          # Fetch RSS feed
+          # ----------------------------------------
 
           def fetch_feed(url, retries=5):
-
               for attempt in range(retries):
-
                   try:
                       request = urllib.request.Request(
                           url,
@@ -65,11 +58,9 @@ jobs:
                           request,
                           timeout=20
                       ) as response:
-
                           return response.read()
 
                   except Exception as e:
-
                       print(
                           f"Feed attempt {attempt + 1} "
                           f"failed: {e}"
@@ -78,32 +69,28 @@ jobs:
               return None
 
 
-          # =========================================================
-          # CLEAN TEXT
-          # =========================================================
+          # ----------------------------------------
+          # Clean text
+          # ----------------------------------------
 
           def clean_text(text):
-
               if not text:
                   return ""
 
               text = html.unescape(text)
 
-              # Remove HTML tags
               text = re.sub(
                   r"<[^>]+>",
                   " ",
                   text
               )
 
-              # Remove URLs
               text = re.sub(
                   r"https?://\S+",
                   "",
                   text
               )
 
-              # Remove excessive whitespace
               text = re.sub(
                   r"\s+",
                   " ",
@@ -113,15 +100,14 @@ jobs:
               return text.strip()
 
 
-          # =========================================================
-          # SHORTEN DESCRIPTION
-          # =========================================================
+          # ----------------------------------------
+          # Shorten descriptions
+          # ----------------------------------------
 
           def shorten_description(
               text,
               max_words=20
           ):
-
               text = clean_text(text)
 
               if not text:
@@ -138,21 +124,20 @@ jobs:
               )
 
 
-          # =========================================================
-          # ESCAPE HTML
-          # =========================================================
+          # ----------------------------------------
+          # Escape HTML
+          # ----------------------------------------
 
           def escape(text):
-
               return html.escape(
                   text or "",
                   quote=True
               )
 
 
-          # =========================================================
-          # GET YOUTUBE VIDEOS
-          # =========================================================
+          # ----------------------------------------
+          # Get YouTube videos
+          # ----------------------------------------
 
           def get_youtube_videos():
 
@@ -161,26 +146,22 @@ jobs:
               )
 
               if not data:
-
                   print(
-                      "Could not retrieve YouTube feed."
+                      "Could not retrieve "
+                      "YouTube feed."
                   )
-
                   return []
 
               try:
-
                   root = ET.fromstring(
                       data
                   )
 
               except Exception as e:
-
                   print(
-                      f"Could not parse YouTube "
-                      f"feed: {e}"
+                      "Could not parse "
+                      f"YouTube feed: {e}"
                   )
-
                   return []
 
               ns = {
@@ -201,8 +182,8 @@ jobs:
                   ns
               )
 
-              # Only use the 4 newest videos
-              for entry in entries[:4]:
+              # Only use the newest 3 videos
+              for entry in entries[:3]:
 
                   video_id = entry.findtext(
                       "yt:videoId",
@@ -222,14 +203,11 @@ jobs:
                   )
 
                   if link_element is not None:
-
                       url = link_element.attrib.get(
                           "href",
                           ""
                       )
-
                   else:
-
                       url = (
                           "https://www.youtube.com/watch?v="
                           + video_id
@@ -252,13 +230,11 @@ jobs:
                       )
 
                       if description_element is not None:
-
                           description = (
                               description_element.text
                               or ""
                           )
 
-                  # Fallback to Atom summary
                   if not description:
 
                       summary = entry.find(
@@ -267,7 +243,6 @@ jobs:
                       )
 
                       if summary is not None:
-
                           description = (
                               summary.text
                               or ""
@@ -280,12 +255,13 @@ jobs:
                       thumbnail = (
                           "https://img.youtube.com/vi/"
                           + video_id
-                          + "/mqdefault.jpg"
+                          + "/"
                       )
 
                   videos.append({
                       "url": url,
-                      "thumbnail": thumbnail,
+                      "thumbnail":
+                          thumbnail,
                       "title": title,
                       "description":
                           shorten_description(
@@ -299,12 +275,12 @@ jobs:
                   len(videos)
               )
 
-              return videos[:4]
+              return videos[:3]
 
 
-          # =========================================================
-          # GET DEV.TO POSTS
-          # =========================================================
+          # ----------------------------------------
+          # Get DEV.to posts
+          # ----------------------------------------
 
           def get_dev_posts():
 
@@ -313,26 +289,22 @@ jobs:
               )
 
               if not data:
-
                   print(
-                      "Could not retrieve DEV.to feed."
+                      "Could not retrieve "
+                      "DEV.to feed."
                   )
-
                   return []
 
               try:
-
                   root = ET.fromstring(
                       data
                   )
 
               except Exception as e:
-
                   print(
-                      f"Could not parse DEV.to "
-                      f"feed: {e}"
+                      "Could not parse "
+                      f"DEV.to feed: {e}"
                   )
-
                   return []
 
               posts = []
@@ -341,8 +313,8 @@ jobs:
                   ".//item"
               )
 
-              # Only use the 8 newest posts
-              for item in items[:8]:
+              # Only use the newest 6 posts
+              for item in items[:6]:
 
                   title_element = item.find(
                       "title"
@@ -352,8 +324,10 @@ jobs:
                       "link"
                   )
 
-                  description_element = item.find(
-                      "description"
+                  description_element = (
+                      item.find(
+                          "description"
+                      )
                   )
 
                   title = (
@@ -374,60 +348,8 @@ jobs:
                       else ""
                   )
 
-                  thumbnail = ""
-
-                  # -------------------------------------------------
-                  # Try RSS enclosure image
-                  # -------------------------------------------------
-
-                  enclosure = item.find(
-                      "enclosure"
-                  )
-
-                  if enclosure is not None:
-
-                      thumbnail = (
-                          enclosure.attrib.get(
-                              "url",
-                              ""
-                          )
-                      )
-
-                  # -------------------------------------------------
-                  # Try Media RSS image
-                  # -------------------------------------------------
-
-                  if not thumbnail:
-
-                      media_content = item.find(
-                          "{http://search.yahoo.com/mrss/}"
-                          "content"
-                      )
-
-                      if media_content is not None:
-
-                          thumbnail = (
-                              media_content.attrib.get(
-                                  "url",
-                                  ""
-                              )
-                          )
-
-                  # -------------------------------------------------
-                  # Fallback image
-                  # -------------------------------------------------
-
-                  if not thumbnail:
-
-                      thumbnail = (
-                          "https://placehold.co/"
-                          "120x68/0a0a0a/ffffff"
-                          "?text=DEV.to"
-                      )
-
                   posts.append({
                       "url": url,
-                      "thumbnail": thumbnail,
                       "title": title,
                       "description":
                           shorten_description(
@@ -441,92 +363,208 @@ jobs:
                   len(posts)
               )
 
-              return posts[:8]
+              return posts[:6]
 
 
-          # =========================================================
-          # CREATE CARD
-          #
-          # The entire card is ONE table cell.
-          #
-          # This prevents GitHub from shrinking the table when
-          # there is only one item.
-          # =========================================================
+          # ----------------------------------------
+          # Create featured YouTube video
+          # ----------------------------------------
 
-          def create_card(item):
+          def create_featured_video(
+              video
+          ):
 
               url = escape(
-                  item["url"]
+                  video["url"]
               )
 
-              thumbnail = escape(
-                  item["thumbnail"]
+              video_id = (
+                  video["url"]
+                  .split("v=")[-1]
+                  .split("&")[0]
+              )
+
+              thumbnail = (
+                  "https://img.youtube.com/vi/"
+                  + escape(video_id)
+                  + "/maxresdefault.jpg"
               )
 
               title = escape(
-                  item["title"]
+                  video["title"]
               )
 
               description = escape(
-                  item["description"]
+                  video["description"]
+              )
+
+              return f"""
+          <tr>
+
+          <td colspan="2" align="center">
+
+          <a href="{url}">
+          <img src="{thumbnail}" width="400">
+          </a>
+
+          **[{title}]({url})**
+
+          {description}
+
+          </td>
+
+          </tr>
+          """
+
+
+          # ----------------------------------------
+          # Create smaller YouTube video
+          # ----------------------------------------
+
+          def create_small_video(
+              video
+          ):
+
+              url = escape(
+                  video["url"]
+              )
+
+              video_id = (
+                  video["url"]
+                  .split("v=")[-1]
+                  .split("&")[0]
+              )
+
+              thumbnail = (
+                  "https://img.youtube.com/vi/"
+                  + escape(video_id)
+                  + "/mqdefault.jpg"
+              )
+
+              title = escape(
+                  video["title"]
+              )
+
+              description = escape(
+                  video["description"]
               )
 
               return f"""
           <td width="50%"
               valign="top"
-              style="padding: 8px;">
+              align="center">
 
-            <a href="{url}">
-              <img
-                src="{thumbnail}"
-                width="120"
-                height="68"
-                align="left"
-                alt=""
-                style="margin-right: 12px;"
-              >
-            </a>
+          <a href="{url}">
+          <img src="{thumbnail}" width="250">
+          </a>
 
-            <a href="{url}">
-              <strong>{title}</strong>
-            </a>
+          **[{title}]({url})**
 
-            <br>
-
-            <small>
-              {description}
-            </small>
+          {description}
 
           </td>
           """
 
 
-          # =========================================================
-          # CREATE EMPTY CARD
-          #
-          # The empty cell is still 50% width so the other card
-          # doesn't expand to fill the entire table.
-          # =========================================================
+          # ----------------------------------------
+          # Create YouTube section
+          # ----------------------------------------
 
-          def create_empty_card():
+          def create_youtube_grid(
+              videos
+          ):
 
-              return """
+              if not videos:
+                  return (
+                      "_Nothing to show yet._"
+                  )
+
+              featured = videos[0]
+
+              html_output = f"""
+          <table width="100%">
+
+          {create_featured_video(featured)}
+          """
+
+              if len(videos) >= 2:
+
+                  html_output += """
+          <tr>
+          """
+
+                  html_output += (
+                      create_small_video(
+                          videos[1]
+                      )
+                  )
+
+                  if len(videos) >= 3:
+
+                      html_output += (
+                          create_small_video(
+                              videos[2]
+                          )
+                      )
+
+                  else:
+
+                      html_output += """
+          <td width="50%"></td>
+          """
+
+                  html_output += """
+          </tr>
+          """
+
+              html_output += """
+          </table>
+          """
+
+              return html_output
+
+
+          # ----------------------------------------
+          # Create blog post
+          # ----------------------------------------
+
+          def create_blog_post(
+              post
+          ):
+
+              url = escape(
+                  post["url"]
+              )
+
+              title = escape(
+                  post["title"]
+              )
+
+              description = escape(
+                  post["description"]
+              )
+
+              return f"""
           <td width="50%"
-              valign="top"
-              style="padding: 8px;">
-            &nbsp;
+              valign="top">
+
+          **[{title}]({url})**
+
+          {description}
+
           </td>
           """
 
 
-          # =========================================================
-          # CREATE 2-COLUMN GRID
-          # =========================================================
+          # ----------------------------------------
+          # Create blog grid
+          # ----------------------------------------
 
-          def create_grid(items):
+          def create_blog_grid(
+              posts
+          ):
 
-              if not items:
-
+              if not posts:
                   return (
                       "_Nothing to show yet._"
                   )
@@ -535,50 +573,52 @@ jobs:
 
               for i in range(
                   0,
-                  len(items),
+                  len(posts),
                   2
               ):
 
-                  left_card = create_card(
-                      items[i]
+                  left = create_blog_post(
+                      posts[i]
                   )
 
-                  if i + 1 < len(items):
+                  if i + 1 < len(posts):
 
-                      right_card = create_card(
-                          items[i + 1]
+                      right = (
+                          create_blog_post(
+                              posts[i + 1]
+                          )
                       )
 
                   else:
 
-                      right_card = (
-                          create_empty_card()
-                      )
+                      right = """
+          <td width="50%"></td>
+          """
 
                   rows.append(
                       f"""
           <tr>
-          {left_card}
-          {right_card}
+
+          {left}
+
+          {right}
+
           </tr>
           """
                   )
 
               return f"""
-          <table
-            width="100%"
-            cellspacing="0"
-            cellpadding="0"
-            style="table-layout: fixed;"
-          >
+          <table width="100%">
+
           {''.join(rows)}
+
           </table>
           """
 
 
-          # =========================================================
-          # READ README
-          # =========================================================
+          # ----------------------------------------
+          # Read README
+          # ----------------------------------------
 
           with open(
               README,
@@ -589,9 +629,9 @@ jobs:
               readme = file.read()
 
 
-          # =========================================================
-          # GET FEEDS
-          # =========================================================
+          # ----------------------------------------
+          # Fetch feeds
+          # ----------------------------------------
 
           youtube_videos = (
               get_youtube_videos()
@@ -602,27 +642,35 @@ jobs:
           )
 
 
-          # =========================================================
-          # CREATE CONTENT
-          # =========================================================
+          # ----------------------------------------
+          # Generate sections
+          # ----------------------------------------
 
-          youtube_content = create_grid(
-              youtube_videos
+          youtube_content = (
+              create_youtube_grid(
+                  youtube_videos
+              )
           )
 
-          blog_content = create_grid(
-              dev_posts
+          blog_content = (
+              create_blog_grid(
+                  dev_posts
+              )
           )
 
 
-          # =========================================================
-          # UPDATE YOUTUBE SECTION
-          # =========================================================
+          # ----------------------------------------
+          # Replace YouTube section
+          # ----------------------------------------
 
           youtube_pattern = (
-              re.escape(YOUTUBE_START)
+              re.escape(
+                  YOUTUBE_START
+              )
               + r".*?"
-              + re.escape(YOUTUBE_END)
+              + re.escape(
+                  YOUTUBE_END
+              )
           )
 
           readme = re.sub(
@@ -640,14 +688,18 @@ jobs:
           )
 
 
-          # =========================================================
-          # UPDATE BLOG SECTION
-          # =========================================================
+          # ----------------------------------------
+          # Replace blog section
+          # ----------------------------------------
 
           blog_pattern = (
-              re.escape(BLOG_START)
+              re.escape(
+                  BLOG_START
+              )
               + r".*?"
-              + re.escape(BLOG_END)
+              + re.escape(
+                  BLOG_END
+              )
           )
 
           readme = re.sub(
@@ -665,9 +717,9 @@ jobs:
           )
 
 
-          # =========================================================
-          # WRITE README
-          # =========================================================
+          # ----------------------------------------
+          # Write README
+          # ----------------------------------------
 
           with open(
               README,
@@ -679,9 +731,11 @@ jobs:
                   readme
               )
 
+
           print(
               "README update complete."
           )
+
           PY
 
       - name: Commit changes

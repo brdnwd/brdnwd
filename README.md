@@ -35,64 +35,21 @@
 
 ## Latest YouTube Videos
 
+## Latest YouTube Videos
+
 <!-- YOUTUBE:START -->
-_Nothing to show yet._
 <!-- YOUTUBE:END -->
 
-[➡️ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
+[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
 
 ---
 
 ## Latest Blog Posts
 
 <!-- BLOG:START -->
-
-<table
-  width="100%"
-  cellspacing="0"
-  cellpadding="0"
-  style="table-layout: fixed;"
->
-
-<tr>
-
-<td width="120" valign="top"
-    style="padding: 4px 0 4px 4px;">
-  <a href="https://dev.to/brdnwd/hello-devto-3cnm">
-    <img
-      src="https://placehold.co/120x68/0a0a0a/ffffff?text=DEV.to"
-      width="120"
-      height="68"
-      alt=""
-    >
-  </a>
-</td>
-
-<td valign="top"
-    style="padding: 8px 12px 8px 8px;">
-  <a href="https://dev.to/brdnwd/hello-devto-3cnm">
-    <strong>Hello Dev.to!</strong>
-  </a>
-  <br>
-  <small>This is my first post, its also a test!</small>
-</td>
-
-
-<td width="120" valign="top"
-    style="padding: 4px;">
-</td>
-
-<td valign="top"
-    style="padding: 4px;">
-</td>
-
-</tr>
-
-</table>
-
 <!-- BLOG:END -->
 
-[➡️ More posts](https://dev.to/brdnwd)
+[➔ More posts](https://dev.to/brdnwd)
 
 ---
 
