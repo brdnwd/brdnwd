@@ -41,11 +41,8 @@
 
 <table width="100%">
 
-
 <tr>
-
 <td colspan="2" align="center">
-
 <a href="https://www.youtube.com/watch?v=9EJ8qi6hfTg">
 <img src="https://img.youtube.com/vi/9EJ8qi6hfTg/maxresdefault.jpg" width="400">
 </a>
@@ -53,32 +50,21 @@
 **[Something is very wrong with this dog.](https://www.youtube.com/watch?v=9EJ8qi6hfTg)**
 
 You would think this game is real. I deny this. Play Take Care of the Dog Here: Watch my horror...
-
 </td>
-
 </tr>
 
-
 <tr>
-
-<td width="50%"
-    valign="top"
-    align="center">
-
+<td width="50%" valign="top" align="center">
 <a href="https://www.youtube.com/watch?v=vbEIpyeEQdU">
 <img src="https://img.youtube.com/vi/vbEIpyeEQdU/mqdefault.jpg" width="250">
 </a>
 
-**[I Ran a Photo Studio and Nothing About It Made Sense](https://www.youtube.com/watch?v=vbEIpyeEQdU)**
+**[I Ran a Photo Studio and Nothing About It Made...](https://www.youtube.com/watch?v=vbEIpyeEQdU)**
 
 How does a game about taking photos somehow make me slowly lose my mind? Play Photomaly here: Watch my horror...
-
 </td>
 
-<td width="50%"
-    valign="top"
-    align="center">
-
+<td width="50%" valign="top" align="center">
 <a href="https://www.youtube.com/watch?v=tQMA8avmzhc">
 <img src="https://img.youtube.com/vi/tQMA8avmzhc/mqdefault.jpg" width="250">
 </a>
@@ -86,13 +72,8 @@ How does a game about taking photos somehow make me slowly lose my mind? Play Ph
 **[Second times the charm](https://www.youtube.com/watch?v=tQMA8avmzhc)**
 
 Here we go again with the YouTube life. 0:00 – Intro 0:29 – Why even starting a video was hard...
-
 </td>
-
-</tr>
-
-</table>
-
+</tr></table>
 <!-- YOUTUBE:END -->
 
 _[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
@@ -103,26 +84,16 @@ _[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
 
 <table width="100%">
 
-
 <tr>
 
-
-<td width="50%"
-    valign="top">
-
+<td width="50%" valign="top">
 **[Hello Dev.to!](https://dev.to/brdnwd/hello-devto-3cnm)**
 
 This is my first post, its also a test!
-
 </td>
 
-
-
 <td width="50%"></td>
-
-
 </tr>
-
 
 </table>
 
