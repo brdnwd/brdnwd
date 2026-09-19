@@ -88,9 +88,50 @@ _[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
 <tr>
 
 <td width="50%" valign="top">
-<a href="https://dev.to/brdnwd/hello-devto-3cnm"><strong>Hello Dev.to!</strong></a>
+<a href="https://dev.to/nazar-boyko/a-million-go-map-entries-take-38mb-not-16mb-2ij3"><strong>A Million Go Map Entries Take 38MB, Not 16MB</strong></a>
 <br><br>
-The test is over; Hello! What is the what-what here when it comes to conversations? Would love to know where...
+A few months ago, I noticed an issue with the internal structure of the new Go map—specifically regarding empty slots!...
+</td>
+
+
+<td width="50%" valign="top">
+<a href="https://dev.to/nazar-boyko/i-added-one-key-to-a-php-array-it-cost-25-mb-of-memory-4b80"><strong>I Added One Key to a PHP Array. It Cost 25 MB o...</strong></a>
+<br><br>
+I was recently refactoring some legacy PHP code and noticed that the same data array was being used in completely...
+</td>
+
+</tr>
+
+<tr>
+
+<td width="50%" valign="top">
+<a href="https://dev.to/nazar-boyko/i-stopped-reviewing-code-and-started-reviewing-agents-2353"><strong>I Stopped Reviewing Code And Started Reviewing...</strong></a>
+<br><br>
+I had an incident at work where an AI-powered agent made a change that passed CI and seemed entirely reasonable...
+</td>
+
+
+<td width="50%" valign="top">
+<a href="https://dev.to/nazar-boyko/has-ai-made-you-a-lazier-developer-be-honest-5ack"><strong>Has AI Made You A Lazier Developer? Be Honest.</strong></a>
+<br><br>
+Haven&#x27;t you ever wondered if this AI vibe coding has made us lazy? Who&#x27;s been solving problems on LeetCode lately?...
+</td>
+
+</tr>
+
+<tr>
+
+<td width="50%" valign="top">
+<a href="https://dev.to/nazar-boyko/you-write-one-kind-sentence-i-donate-a-dime-a-blockchain-makes-sure-i-do-f5o"><strong>You write one kind sentence. I donate a dime. A...</strong></a>
+<br><br>
+This is a submission for the DEV Weekend Challenge: Generosity Edition . Update, September 14. The pledge is settled: 21...
+</td>
+
+
+<td width="50%" valign="top">
+<a href="https://dev.to/nazar-boyko/stop-copy-pasting-ai-code-you-dont-understand-4ad5"><strong>Stop Copy-Pasting AI Code You Don&#x27;t Understand</strong></a>
+<br><br>
+Pasting AI code because it runs feels productive and for today it is! I this post I want to explain...
 </td>
 
 </tr>
