@@ -90,7 +90,7 @@ _[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
 <td width="50%" valign="top">
 <a href="https://dev.to/brdnwd/hello-devto-3cnm"><strong>Hello Dev.to!</strong></a>
 <br><br>
-This is my first post, its also a test!
+The test is over; Hello! What is the what-what here when it comes to conversations? Would love to know where...
 </td>
 
 </tr>
