@@ -167,10 +167,7 @@ jobs:
                       "id": video_id,
                       "url": f"https://www.youtube.com/watch?v={video_id}",
                       "title": shorten_title(snippet.get("title", ""), 50),
-                      "description": shorten_description(
-                          snippet.get("description", ""),
-                          20
-                      )
+                      "description": shorten_description(snippet.get("description", ""), 20)
                   })
 
               print("YouTube videos found:", len(videos))
@@ -236,9 +233,9 @@ jobs:
           <a href="{url}">
           <img src="{thumbnail}" width="400">
           </a>
-
-          **[{title}]({url})**
-
+          <br>
+          <a href="{url}"><strong>{title}</strong></a>
+          <br><br>
           {description}
           </td>
           </tr>
@@ -256,9 +253,9 @@ jobs:
           <a href="{url}">
           <img src="{thumbnail}" width="250">
           </a>
-
-          **[{title}]({url})**
-
+          <br>
+          <a href="{url}"><strong>{title}</strong></a>
+          <br><br>
           {description}
           </td>
           """
@@ -293,8 +290,8 @@ jobs:
 
               return f"""
           <td width="50%" valign="top">
-          **[{title}]({url})**
-
+          <a href="{url}"><strong>{title}</strong></a>
+          <br><br>
           {description}
           </td>
           """
@@ -310,13 +307,16 @@ jobs:
 
                   if i + 1 < len(posts):
                       right = create_blog_post(posts[i + 1])
-                  else:
-                      right = '<td width="50%"></td>'
-
-                  rows.append(f"""
+                      rows.append(f"""
           <tr>
           {left}
           {right}
+          </tr>
+          """)
+                  else:
+                      rows.append(f"""
+          <tr>
+          {left}
           </tr>
           """)
 
