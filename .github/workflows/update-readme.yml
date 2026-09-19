@@ -1,10 +1,8 @@
-name: Update README
+name: Update README Feeds
 
 on:
   schedule:
-    # Every 6 hours
     - cron: "17 */6 * * *"
-
   workflow_dispatch:
 
 permissions:
@@ -18,105 +16,78 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update README feeds
+      - name: Update README
         run: |
-          python <<'PY'
+          python3 <<'PY'
           import urllib.request
+          import urllib.error
           import xml.etree.ElementTree as ET
-          import html
           import re
-          import time
+          import html
 
           README = "README.md"
 
-          YOUTUBE_FEED = (
-              "https://www.youtube.com/feeds/videos.xml?"
-              "channel_id=UC1eVpwYmIxLqi84OroyZo6w"
-          )
-
+          YOUTUBE_FEED = "https://www.youtube.com/feeds/videos.xml?channel_id=UC1eVpwYmIxLqi84OroyZo6w"
           DEV_FEED = "https://dev.to/feed/brdnwd"
 
+          YOUTUBE_START = "<!-- YOUTUBE:START -->"
+          YOUTUBE_END = "<!-- YOUTUBE:END -->"
+
+          BLOG_START = "<!-- BLOG:START -->"
+          BLOG_END = "<!-- BLOG:END -->"
+
+
           # ---------------------------------------------------------
-          # Fetch a feed with retries
+          # Fetch RSS/Atom feed
           # ---------------------------------------------------------
 
-          def fetch(url, retries=5):
-              last_error = None
-
-              for attempt in range(1, retries + 1):
+          def fetch_feed(url, retries=5):
+              for attempt in range(retries):
                   try:
-                      print(f"Fetching: {url}")
-                      print(f"Attempt {attempt}/{retries}")
-
                       request = urllib.request.Request(
                           url,
                           headers={
-                              "User-Agent": (
-                                  "Mozilla/5.0 "
-                                  "(compatible; brdnwd-readme-updater/1.0)"
-                              )
+                              "User-Agent": "Mozilla/5.0"
                           }
                       )
 
-                      with urllib.request.urlopen(
-                          request,
-                          timeout=30
-                      ) as response:
+                      with urllib.request.urlopen(request, timeout=20) as response:
                           return response.read()
 
-                  except Exception as error:
-                      last_error = error
-                      print(f"Request failed: {error}")
+                  except Exception as e:
+                      print(f"Feed attempt {attempt + 1} failed: {e}")
 
-                      if attempt < retries:
-                          wait_time = attempt * 10
-                          print(
-                              f"Waiting {wait_time} seconds..."
-                          )
-                          time.sleep(wait_time)
+              return None
 
-              raise last_error
 
           # ---------------------------------------------------------
-          # Clean HTML from descriptions
+          # Clean text
           # ---------------------------------------------------------
 
-          def clean_description(text):
+          def clean_text(text):
               if not text:
                   return ""
 
-              # Decode HTML entities
               text = html.unescape(text)
 
-              # Remove HTML tags
-              text = re.sub(
-                  r"<[^>]+>",
-                  " ",
-                  text
-              )
+              # Remove HTML
+              text = re.sub(r"<[^>]+>", " ", text)
 
               # Remove URLs
-              text = re.sub(
-                  r"https?://\S+",
-                  "",
-                  text
-              )
+              text = re.sub(r"https?://\S+", "", text)
 
-              # Collapse whitespace
-              text = re.sub(
-                  r"\s+",
-                  " ",
-                  text
-              ).strip()
+              # Remove excessive whitespace
+              text = re.sub(r"\s+", " ", text)
 
-              return text
+              return text.strip()
+
 
           # ---------------------------------------------------------
-          # Limit description to 20 words
+          # Shorten descriptions
           # ---------------------------------------------------------
 
           def shorten_description(text, max_words=20):
-              text = clean_description(text)
+              text = clean_text(text)
 
               if not text:
                   return ""
@@ -128,453 +99,320 @@ jobs:
 
               return " ".join(words[:max_words]) + "..."
 
+
           # ---------------------------------------------------------
           # Escape text for HTML
           # ---------------------------------------------------------
 
           def escape(text):
-              return html.escape(
-                  text,
-                  quote=True
-              )
+              return html.escape(text, quote=True)
+
 
           # ---------------------------------------------------------
-          # Update README section
+          # YouTube feed
           # ---------------------------------------------------------
 
-          def update_section(
-              readme,
-              start_marker,
-              end_marker,
-              content
-          ):
-              pattern = (
-                  re.escape(start_marker)
-                  + r".*?"
-                  + re.escape(end_marker)
-              )
+          def get_youtube_videos():
+              data = fetch_feed(YOUTUBE_FEED)
 
-              replacement = (
-                  start_marker
-                  + "\n"
-                  + content
-                  + "\n"
-                  + end_marker
-              )
+              if not data:
+                  print("Could not retrieve YouTube feed.")
+                  return []
 
-              updated, count = re.subn(
-                  pattern,
-                  replacement,
-                  readme,
-                  count=1,
-                  flags=re.DOTALL
-              )
+              try:
+                  root = ET.fromstring(data)
+              except Exception as e:
+                  print(f"Could not parse YouTube feed: {e}")
+                  return []
 
-              if count == 0:
-                  print(
-                      f"WARNING: Could not find "
-                      f"{start_marker}"
-                  )
+              ns = {
+                  "atom": "http://www.w3.org/2005/Atom",
+                  "yt": "http://www.youtube.com/xml/schemas/2015",
+                  "media": "http://search.yahoo.com/mrss/"
+              }
 
-              return updated
+              videos = []
 
-          # ---------------------------------------------------------
-          # Create one compact card
-          # ---------------------------------------------------------
+              for entry in root.findall("atom:entry", ns)[:4]:
 
-          def create_card(
-              url,
-              thumbnail,
-              title,
-              description
-          ):
-              title = escape(title)
-              description = escape(description)
+                  video_id = entry.findtext("yt:videoId", default="", namespaces=ns)
+                  title = entry.findtext("atom:title", default="", namespaces=ns)
 
-              if description:
-                  description_html = (
-                      f"<sub>{description}</sub>"
-                  )
-              else:
-                  description_html = ""
-
-              return f"""
-          <td width="50%" valign="top">
-          <table>
-          <tr>
-          <td width="120" valign="top" style="padding: 0;">
-          <a href="{url}">
-          <img src="{thumbnail}" width="120" height="68">
-          </a>
-          </td>
-          <td valign="top" style="padding: 8px 12px;">
-          <a href="{url}">
-          <strong>{title}</strong>
-          </a>
-          <br>
-          {description_html}
-          </td>
-          </tr>
-          </table>
-          </td>
-          """
-
-          # ---------------------------------------------------------
-          # Build a 2-column grid
-          # ---------------------------------------------------------
-
-          def create_grid(cards):
-              rows = []
-
-              for i in range(0, len(cards), 2):
-                  first = cards[i]
-
-                  if i + 1 < len(cards):
-                      second = cards[i + 1]
-                  else:
-                      second = '<td width="50%"></td>'
-
-                  rows.append(
-                      f"""
-          <tr>
-          {first}
-          {second}
-          </tr>
-          """
-                  )
-
-              return (
-                  "<table>\n"
-                  + "\n".join(rows)
-                  + "\n</table>"
-              )
-
-          # ---------------------------------------------------------
-          # Read README
-          # ---------------------------------------------------------
-
-          with open(
-              README,
-              "r",
-              encoding="utf-8"
-          ) as file:
-              readme = file.read()
-
-          original_readme = readme
-
-          # =========================================================
-          # YOUTUBE
-          # =========================================================
-
-          try:
-              print("\nFetching YouTube feed...")
-
-              youtube_data = fetch(
-                  YOUTUBE_FEED,
-                  retries=5
-              )
-
-              youtube_root = ET.fromstring(
-                  youtube_data
-              )
-
-              ATOM = (
-                  "{http://www.w3.org/2005/Atom}"
-              )
-
-              MEDIA = (
-                  "{http://search.yahoo.com/mrss/}"
-              )
-
-              YOUTUBE = (
-                  "{http://www.youtube.com/xml/"
-                  "schemas/2015}"
-              )
-
-              youtube_cards = []
-
-              entries = youtube_root.findall(
-                  f"{ATOM}entry"
-              )[:4]
-
-              for entry in entries:
-
-                  title = entry.findtext(
-                      f"{ATOM}title",
-                      default="Untitled Video"
-                  )
-
-                  video_id = entry.findtext(
-                      f"{YOUTUBE}videoId",
-                      default=""
-                  )
-
-                  link_element = entry.find(
-                      f"{ATOM}link"
-                  )
-
-                  video_url = ""
+                  link_element = entry.find("atom:link", ns)
 
                   if link_element is not None:
-                      video_url = (
-                          link_element.attrib.get(
-                              "href",
-                              ""
-                          )
-                      )
-
-                  if not video_url and video_id:
-                      video_url = (
-                          "https://www.youtube.com/watch?v="
-                          + video_id
-                      )
-
-                  if not video_id or not video_url:
-                      continue
-
-                  # -----------------------------------------------
-                  # Get YouTube description
-                  # -----------------------------------------------
+                      url = link_element.attrib.get("href", "")
+                  else:
+                      url = f"https://www.youtube.com/watch?v={video_id}"
 
                   description = ""
 
-                  media_group = entry.find(
-                      f"{MEDIA}group"
-                  )
+                  media_group = entry.find("media:group", ns)
 
                   if media_group is not None:
-                      description = (
-                          media_group.findtext(
-                              f"{MEDIA}description",
-                              default=""
-                          )
+                      description_element = media_group.find(
+                          "media:description",
+                          ns
                       )
 
-                  # Fallback to Atom summary
+                      if description_element is not None:
+                          description = description_element.text or ""
+
                   if not description:
-                      description = entry.findtext(
-                          f"{ATOM}summary",
-                          default=""
+                      summary = entry.find("atom:summary", ns)
+
+                      if summary is not None:
+                          description = summary.text or ""
+
+                  thumbnail = ""
+
+                  if video_id:
+                      thumbnail = (
+                          f"https://img.youtube.com/vi/"
+                          f"{video_id}/mqdefault.jpg"
                       )
 
-                  description = shorten_description(
-                      description,
-                      20
+                  videos.append({
+                      "url": url,
+                      "thumbnail": thumbnail,
+                      "title": title,
+                      "description": shorten_description(description, 20)
+                  })
+
+              return videos
+
+
+          # ---------------------------------------------------------
+          # DEV.to feed
+          # ---------------------------------------------------------
+
+          def get_dev_posts():
+              data = fetch_feed(DEV_FEED)
+
+              if not data:
+                  print("Could not retrieve DEV.to feed.")
+                  return []
+
+              try:
+                  root = ET.fromstring(data)
+              except Exception as e:
+                  print(f"Could not parse DEV.to feed: {e}")
+                  return []
+
+              posts = []
+
+              for item in root.findall(".//item")[:8]:
+
+                  title_element = item.find("title")
+                  link_element = item.find("link")
+                  description_element = item.find("description")
+
+                  title = (
+                      title_element.text
+                      if title_element is not None
+                      else ""
                   )
 
-                  thumbnail = (
-                      "https://img.youtube.com/vi/"
-                      + video_id
-                      + "/mqdefault.jpg"
+                  url = (
+                      link_element.text
+                      if link_element is not None
+                      else ""
                   )
 
-                  youtube_cards.append(
-                      create_card(
-                          video_url,
-                          thumbnail,
-                          title,
-                          description
-                      )
+                  description = (
+                      description_element.text
+                      if description_element is not None
+                      else ""
                   )
 
-              if youtube_cards:
+                  # Try to find an image from the RSS enclosure
+                  thumbnail = ""
 
-                  youtube_content = create_grid(
-                      youtube_cards
-                  )
-
-                  readme = update_section(
-                      readme,
-                      "<!-- YOUTUBE:START -->",
-                      "<!-- YOUTUBE:END -->",
-                      youtube_content
-                  )
-
-                  print(
-                      "YouTube section updated."
-                  )
-
-              else:
-                  print(
-                      "No YouTube videos found."
-                  )
-
-          except Exception as error:
-
-              print(
-                  "WARNING: YouTube feed could not "
-                  f"be updated: {error}"
-              )
-
-              print(
-                  "Keeping existing YouTube section."
-              )
-
-          # =========================================================
-          # DEV.TO
-          # =========================================================
-
-          try:
-              print("\nFetching DEV.to feed...")
-
-              dev_data = fetch(
-                  DEV_FEED,
-                  retries=3
-              )
-
-              dev_root = ET.fromstring(
-                  dev_data
-              )
-
-              dev_items = dev_root.findall(
-                  "./channel/item"
-              )[:8]
-
-              dev_cards = []
-
-              for item in dev_items:
-
-                  title = item.findtext(
-                      "title",
-                      default="Untitled Post"
-                  )
-
-                  link = item.findtext(
-                      "link",
-                      default=""
-                  )
-
-                  if not link:
-                      continue
-
-                  # -----------------------------------------------
-                  # Get description
-                  # -----------------------------------------------
-
-                  description = item.findtext(
-                      "description",
-                      default=""
-                  )
-
-                  description = shorten_description(
-                      description,
-                      20
-                  )
-
-                  # -----------------------------------------------
-                  # Get post image
-                  # -----------------------------------------------
-
-                  image_url = ""
-
-                  # Try enclosure
-                  enclosure = item.find(
-                      "enclosure"
-                  )
+                  enclosure = item.find("enclosure")
 
                   if enclosure is not None:
-                      image_url = (
-                          enclosure.attrib.get(
-                              "url",
-                              ""
-                          )
-                      )
+                      thumbnail = enclosure.attrib.get("url", "")
 
-                  # Try Media RSS
-                  if not image_url:
-
+                  # Try Media RSS if no enclosure exists
+                  if not thumbnail:
                       media_content = item.find(
-                          "{http://search.yahoo.com/"
-                          "mrss/}content"
+                          "{http://search.yahoo.com/mrss/}content"
                       )
 
                       if media_content is not None:
-                          image_url = (
-                              media_content.attrib.get(
-                                  "url",
-                                  ""
-                              )
-                          )
+                          thumbnail = media_content.attrib.get("url", "")
 
                   # Fallback image
-                  if not image_url:
-                      image_url = (
+                  if not thumbnail:
+                      thumbnail = (
                           "https://placehold.co/"
                           "120x68/0a0a0a/ffffff"
                           "?text=DEV.to"
                       )
 
-                  dev_cards.append(
-                      create_card(
-                          link,
-                          image_url,
-                          title,
-                          description
-                      )
-                  )
+                  posts.append({
+                      "url": url,
+                      "thumbnail": thumbnail,
+                      "title": title,
+                      "description": shorten_description(description, 20)
+                  })
 
-              if dev_cards:
+              return posts
 
-                  dev_content = create_grid(
-                      dev_cards
-                  )
 
-              else:
+          # ---------------------------------------------------------
+          # Create a single card
+          #
+          # Each card uses TWO cells:
+          #   1. Thumbnail
+          #   2. Text
+          #
+          # Two cards therefore use FOUR cells per row.
+          # ---------------------------------------------------------
 
-                  dev_content = (
-                      "<p><em>"
-                      "No DEV.to posts yet."
-                      "</em></p>"
-                  )
+          def create_card(item):
+              url = escape(item["url"])
+              thumbnail = escape(item["thumbnail"])
+              title = escape(item["title"])
+              description = escape(item["description"])
 
-              readme = update_section(
-                  readme,
-                  "<!-- BLOG:START -->",
-                  "<!-- BLOG:END -->",
-                  dev_content
-              )
+              return f"""
+          <td width="120" valign="top" style="padding: 4px 0 4px 4px;">
+            <a href="{url}">
+              <img src="{thumbnail}" width="120" height="68" alt="">
+            </a>
+          </td>
+          <td valign="top" style="padding: 8px 12px 8px 8px;">
+            <a href="{url}">
+              <strong>{title}</strong>
+            </a>
+            <br>
+            <small>{description}</small>
+          </td>
+          """
 
-              print(
-                  "DEV.to section updated."
-              )
 
-          except Exception as error:
+          # ---------------------------------------------------------
+          # Create 2-column card grid
+          # ---------------------------------------------------------
 
-              print(
-                  "WARNING: DEV.to feed could not "
-                  f"be updated: {error}"
-              )
+          def create_grid(items):
+              rows = []
 
-              print(
-                  "Keeping existing DEV.to section."
-              )
+              for i in range(0, len(items), 2):
 
-          # =========================================================
-          # SAVE README
-          # =========================================================
+                  left = create_card(items[i])
 
-          if readme != original_readme:
+                  if i + 1 < len(items):
+                      right = create_card(items[i + 1])
+                  else:
+                      right = """
+          <td colspan="2"></td>
+          """
 
-              with open(
-                  README,
-                  "w",
-                  encoding="utf-8"
-              ) as file:
-                  file.write(readme)
+                  rows.append(f"""
+          <tr>
+          {left}
+          {right}
+          </tr>
+          """)
 
-              print(
-                  "\nREADME.md was updated."
-              )
+              return f"""
+          <table width="100%">
+          {''.join(rows)}
+          </table>
+          """
 
+
+          # ---------------------------------------------------------
+          # Read README
+          # ---------------------------------------------------------
+
+          with open(README, "r", encoding="utf-8") as file:
+              readme = file.read()
+
+
+          # ---------------------------------------------------------
+          # YouTube
+          # ---------------------------------------------------------
+
+          youtube_videos = get_youtube_videos()
+
+          if youtube_videos:
+              youtube_content = create_grid(youtube_videos)
           else:
+              youtube_content = "_No videos found._"
 
-              print(
-                  "\nNo README changes were necessary."
-              )
 
+          # ---------------------------------------------------------
+          # DEV.to
+          # ---------------------------------------------------------
+
+          dev_posts = get_dev_posts()
+
+          if dev_posts:
+              blog_content = create_grid(dev_posts)
+          else:
+              blog_content = "_No posts found._"
+
+
+          # ---------------------------------------------------------
+          # Replace YouTube section
+          # ---------------------------------------------------------
+
+          youtube_pattern = (
+              re.escape(YOUTUBE_START)
+              + r".*?"
+              + re.escape(YOUTUBE_END)
+          )
+
+          readme = re.sub(
+              youtube_pattern,
+              YOUTUBE_START
+              + "\n"
+              + youtube_content
+              + "\n"
+              + YOUTUBE_END,
+              readme,
+              flags=re.DOTALL
+          )
+
+
+          # ---------------------------------------------------------
+          # Replace blog section
+          # ---------------------------------------------------------
+
+          blog_pattern = (
+              re.escape(BLOG_START)
+              + r".*?"
+              + re.escape(BLOG_END)
+          )
+
+          readme = re.sub(
+              blog_pattern,
+              BLOG_START
+              + "\n"
+              + blog_content
+              + "\n"
+              + BLOG_END,
+              readme,
+              flags=re.DOTALL
+          )
+
+
+          # ---------------------------------------------------------
+          # Write README
+          # ---------------------------------------------------------
+
+          with open(README, "w", encoding="utf-8") as file:
+              file.write(readme)
+
+          print("README updated successfully.")
+          print(f"YouTube videos: {len(youtube_videos)}")
+          print(f"DEV.to posts: {len(dev_posts)}")
           PY
 
-      - name: Commit README changes
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -582,8 +420,8 @@ jobs:
           git add README.md
 
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No README changes to commit."
           else
-            git commit -m "chore: update README feeds"
+            git commit -m "Update YouTube and DEV.to feeds"
             git push
           fi
