@@ -75,21 +75,47 @@ jobs:
 
           def fetch_json(url):
 
-              data = fetch_url(url)
-
-              if not data:
-                  return None
-
               try:
 
-                  return json.loads(
-                      data.decode("utf-8")
+                  request = urllib.request.Request(
+                      url,
+                      headers={
+                          "User-Agent": "Mozilla/5.0"
+                      }
                   )
+
+                  with urllib.request.urlopen(
+                      request,
+                      timeout=20
+                  ) as response:
+
+                      data = response.read()
+
+                      return json.loads(
+                          data.decode("utf-8")
+                      )
+
+              except urllib.error.HTTPError as e:
+
+                  error_body = e.read().decode(
+                      "utf-8",
+                      errors="replace"
+                  )
+
+                  print(
+                      f"HTTP Error {e.code}:"
+                  )
+
+                  print(
+                      error_body
+                  )
+
+                  return None
 
               except Exception as e:
 
                   print(
-                      f"Could not parse JSON: {e}"
+                      f"Request failed: {e}"
                   )
 
                   return None
