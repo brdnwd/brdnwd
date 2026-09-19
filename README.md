@@ -16,8 +16,10 @@
 ### Languages & Tools
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![JS](https://img.shields.io/badge/JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node](https://img.shields.io/badge/Node-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
@@ -26,55 +28,26 @@
 ![Lua](https://img.shields.io/badge/Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![Visual Studio Code](https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Unity](https://img.shields.io/badge/Unity-000000?style=for-the-badge&logo=unity&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91?style=for-the-badge&logo=visual-studio&logoColor=white)
+
 
 ---
 
 ## Latest YouTube Videos
 
 <!-- YOUTUBE:START -->
-_Nothing to show yet._
 <!-- YOUTUBE:END -->
 
-[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
-
----
+_[➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)_
 
 ## Latest Blog Posts
 
 <!-- BLOG:START -->
-
-<table width="100%">
-
-
-<tr>
-
-
-<td width="50%"
-    valign="top">
-
-**[Hello Dev.to!](https://dev.to/brdnwd/hello-devto-3cnm)**
-
-This is my first post, its also a test!
-
-</td>
-
-
-
-<td width="50%"></td>
-
-
-</tr>
-
-
-</table>
-
 <!-- BLOG:END -->
 
-[➔ More posts](https://dev.to/brdnwd)
+_[➔ More posts](https://dev.to/brdnwd)_
 
 ---
 
