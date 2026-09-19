@@ -36,6 +36,7 @@
 ## Latest YouTube Videos
 
 <!-- YOUTUBE:START -->
+_Nothing to show yet._
 <!-- YOUTUBE:END -->
 
 [➔ More videos](https://www.youtube.com/channel/UC1eVpwYmIxLqi84OroyZo6w)
@@ -45,6 +46,32 @@
 ## Latest Blog Posts
 
 <!-- BLOG:START -->
+
+<table width="100%">
+
+
+<tr>
+
+
+<td width="50%"
+    valign="top">
+
+**[Hello Dev.to!](https://dev.to/brdnwd/hello-devto-3cnm)**
+
+This is my first post, its also a test!
+
+</td>
+
+
+
+<td width="50%"></td>
+
+
+</tr>
+
+
+</table>
+
 <!-- BLOG:END -->
 
 [➔ More posts](https://dev.to/brdnwd)
