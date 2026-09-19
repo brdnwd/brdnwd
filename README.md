@@ -3,6 +3,7 @@
 - 🧑 IT major with 6+ years of self-taught programming experience
 - 🎺 Musician, marcher, and trumpet player with 7+ years of experience
 - 💻 Interested in web development, software development, game development, and QA testing
+- ❤️ Love recording and editing videos for Youtube
 - 🌱 Currently learning more about C++
     
 ### Connect
