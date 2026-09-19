@@ -8,7 +8,7 @@
 - ❤️ Love recording and editing videos for Youtube
 - 🌱 Currently learning more about C++
 
-### Connect
+### Socials & Links
 
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/brdnwd)
 [![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://facebook.com/brdnwd)
