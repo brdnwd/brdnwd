@@ -65,11 +65,14 @@ jobs:
                           request,
                           timeout=20
                       ) as response:
+
                           return response.read()
 
                   except Exception as e:
+
                       print(
-                          f"Feed attempt {attempt + 1} failed: {e}"
+                          f"Feed attempt {attempt + 1} "
+                          f"failed: {e}"
                       )
 
               return None
@@ -158,18 +161,26 @@ jobs:
               )
 
               if not data:
+
                   print(
                       "Could not retrieve YouTube feed."
                   )
+
                   return []
 
               try:
-                  root = ET.fromstring(data)
+
+                  root = ET.fromstring(
+                      data
+                  )
 
               except Exception as e:
+
                   print(
-                      f"Could not parse YouTube feed: {e}"
+                      f"Could not parse YouTube "
+                      f"feed: {e}"
                   )
+
                   return []
 
               ns = {
@@ -190,6 +201,7 @@ jobs:
                   ns
               )
 
+              # Only use the 4 newest videos
               for entry in entries[:4]:
 
                   video_id = entry.findtext(
@@ -210,11 +222,14 @@ jobs:
                   )
 
                   if link_element is not None:
+
                       url = link_element.attrib.get(
                           "href",
                           ""
                       )
+
                   else:
+
                       url = (
                           "https://www.youtube.com/watch?v="
                           + video_id
@@ -237,11 +252,13 @@ jobs:
                       )
 
                       if description_element is not None:
+
                           description = (
                               description_element.text
                               or ""
                           )
 
+                  # Fallback to Atom summary
                   if not description:
 
                       summary = entry.find(
@@ -250,6 +267,7 @@ jobs:
                       )
 
                       if summary is not None:
+
                           description = (
                               summary.text
                               or ""
@@ -277,8 +295,8 @@ jobs:
                   })
 
               print(
-                  f"YouTube videos found: "
-                  f"{len(videos)}"
+                  "YouTube videos found:",
+                  len(videos)
               )
 
               return videos[:4]
@@ -295,18 +313,26 @@ jobs:
               )
 
               if not data:
+
                   print(
                       "Could not retrieve DEV.to feed."
                   )
+
                   return []
 
               try:
-                  root = ET.fromstring(data)
+
+                  root = ET.fromstring(
+                      data
+                  )
 
               except Exception as e:
+
                   print(
-                      f"Could not parse DEV.to feed: {e}"
+                      f"Could not parse DEV.to "
+                      f"feed: {e}"
                   )
+
                   return []
 
               posts = []
@@ -315,6 +341,7 @@ jobs:
                   ".//item"
               )
 
+              # Only use the 8 newest posts
               for item in items[:8]:
 
                   title_element = item.find(
@@ -349,7 +376,10 @@ jobs:
 
                   thumbnail = ""
 
-                  # Try enclosure image
+                  # -------------------------------------------------
+                  # Try RSS enclosure image
+                  # -------------------------------------------------
+
                   enclosure = item.find(
                       "enclosure"
                   )
@@ -363,7 +393,10 @@ jobs:
                           )
                       )
 
+                  # -------------------------------------------------
                   # Try Media RSS image
+                  # -------------------------------------------------
+
                   if not thumbnail:
 
                       media_content = item.find(
@@ -380,7 +413,10 @@ jobs:
                               )
                           )
 
+                  # -------------------------------------------------
                   # Fallback image
+                  # -------------------------------------------------
+
                   if not thumbnail:
 
                       thumbnail = (
@@ -401,8 +437,8 @@ jobs:
                   })
 
               print(
-                  f"DEV.to posts found: "
-                  f"{len(posts)}"
+                  "DEV.to posts found:",
+                  len(posts)
               )
 
               return posts[:8]
@@ -410,6 +446,11 @@ jobs:
 
           # =========================================================
           # CREATE CARD
+          #
+          # The entire card is ONE table cell.
+          #
+          # This prevents GitHub from shrinking the table when
+          # there is only one item.
           # =========================================================
 
           def create_card(item):
@@ -431,25 +472,31 @@ jobs:
               )
 
               return f"""
-          <td width="120" valign="top"
-              style="padding: 4px 0 4px 4px;">
+          <td width="50%"
+              valign="top"
+              style="padding: 8px;">
+
             <a href="{url}">
               <img
                 src="{thumbnail}"
                 width="120"
                 height="68"
+                align="left"
                 alt=""
+                style="margin-right: 12px;"
               >
             </a>
-          </td>
 
-          <td valign="top"
-              style="padding: 8px 12px 8px 8px;">
             <a href="{url}">
               <strong>{title}</strong>
             </a>
+
             <br>
-            <small>{description}</small>
+
+            <small>
+              {description}
+            </small>
+
           </td>
           """
 
@@ -457,27 +504,23 @@ jobs:
           # =========================================================
           # CREATE EMPTY CARD
           #
-          # IMPORTANT:
-          # We keep TWO empty cells instead of using colspan.
-          # This keeps the 2-column layout when there is only
-          # one post/video.
+          # The empty cell is still 50% width so the other card
+          # doesn't expand to fill the entire table.
           # =========================================================
 
           def create_empty_card():
 
               return """
-          <td width="120" valign="top"
-              style="padding: 4px;">
-          </td>
-
-          <td valign="top"
-              style="padding: 4px;">
+          <td width="50%"
+              valign="top"
+              style="padding: 8px;">
+            &nbsp;
           </td>
           """
 
 
           # =========================================================
-          # CREATE GRID
+          # CREATE 2-COLUMN GRID
           # =========================================================
 
           def create_grid(items):
