@@ -104,6 +104,6 @@ _[➔ More posts](https://dev.to/brdnwd)_
 
 ---
 
-[![Stars](https://img.shields.io/github/stars/brdnwd?style=for-the-badge&label=STARS&color=502a62)](https://github.com/brdnwd)
+[![Stars](https://img.shields.io/github/stars/brdnwd?style=for-the-badge&label=STARS&color=502a62)](https://github.com/brdnwd?tab=stars)
 [![Followers](https://img.shields.io/github/followers/brdnwd?style=for-the-badge&label=FOLLOWERS&color=624c2a)](https://github.com/brdnwd?tab=followers)
 ![Visitors](https://komarev.com/ghpvc/?username=brdnwd&label=VISITORS&color=622a37&style=for-the-badge)
