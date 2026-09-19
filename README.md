@@ -1,4 +1,4 @@
-# Hi, I'm Braden 👋
+# Hi 👋, I'm Braden
 
 - 🧑 IT major with 6+ years of self-taught programming experience
 - 🎺 Musician, marcher, and trumpet player with 7+ years of experience
