@@ -1,5 +1,5 @@
 <!-- GREETING:START -->
-# Hey 👋, hows your day going?
+# Hey 👋, What's up?
 <!-- GREETING:END -->
 
 - 🧑 IT major with 6+ years of self-taught programming experience
@@ -116,7 +116,7 @@ _[➔ More posts](https://dev.to/brdnwd)_
 <!-- REFRESH:START -->
 This README file is generated every 3 hours!
 <br>
-Last refresh: Friday, 16 October, 23:35 CDT
+Last refresh: Saturday, 17 October, 05:51 CDT
 <!-- REFRESH:END -->
 
 <br>
