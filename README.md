@@ -1,5 +1,5 @@
 <!-- GREETING:START -->
-# Hi 👋, Thanks for checking out my profile
+# Hey 👋, Hope you're doing well
 <!-- GREETING:END -->
 
 - 🧑 IT major with 6+ years of self-taught programming experience
@@ -116,7 +116,7 @@ _[➔ More posts](https://dev.to/brdnwd)_
 <!-- REFRESH:START -->
 This README file is generated every 3 hours!
 <br>
-Last refresh: Wednesday, 4 November, 00:35 CST
+Last refresh: Wednesday, 4 November, 11:19 CST
 <!-- REFRESH:END -->
 
 <br>
