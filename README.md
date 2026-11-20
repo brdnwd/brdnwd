@@ -1,5 +1,5 @@
 <!-- GREETING:START -->
-# Hey 👋, Hope you're doing well
+# Hi 👋, I'm Braden
 <!-- GREETING:END -->
 
 - 🧑 IT major with 6+ years of self-taught programming experience
@@ -116,7 +116,7 @@ _[➔ More posts](https://dev.to/brdnwd)_
 <!-- REFRESH:START -->
 This README file is generated every 3 hours!
 <br>
-Last refresh: Thursday, 19 November, 20:22 CST
+Last refresh: Friday, 20 November, 05:49 CST
 <!-- REFRESH:END -->
 
 <br>
